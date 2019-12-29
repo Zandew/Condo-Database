@@ -1,6 +1,8 @@
-class Driver{
+#include<Profile.h>
+#include<Car.h>
+
+class Driver : protected Profile{
 	private:
-		string name;
 		Car car;
 		double rating;
-}
+};
