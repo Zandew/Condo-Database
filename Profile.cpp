@@ -1,4 +1,6 @@
-#include <Profile.h>
+#include <iostream>
+#include <vector>
+#include "Profile.h"
 #include "Ride.h"
 
 Profile::Profile(string name){

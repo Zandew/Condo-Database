@@ -1,3 +1,9 @@
+#include <iostream>
+#include <vector>
+#include "Ride.h"
+
+using namespace std;
+
 class Profile{
 	protected:
 		string name;
@@ -9,4 +15,3 @@ class Profile{
 		void addRide(Ride ride);
 		void payRide(int idx);
 };
-
