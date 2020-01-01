@@ -7,7 +7,8 @@
 using namespace std;
 
 int main(){
-	string name = "Andrew";
+	string name;
+	cin >> name;
 	cout << name << endl;
 	Profile profile(string);
 	return 0;
