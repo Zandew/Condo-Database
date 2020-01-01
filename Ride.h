@@ -1,5 +1,8 @@
+#pragma once
 #include <iostream>
 #include "Driver.h"
+
+class Driver;
 
 class Ride{
 	private:
@@ -8,4 +11,4 @@ class Ride{
 	public:
 		Ride(Driver driver, string source, string destination);
 		~Ride();
-}
+};

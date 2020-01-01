@@ -1,8 +1,11 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include "Ride.h"
 
 using namespace std;
+
+class Ride;
 
 class Profile{
 	protected:

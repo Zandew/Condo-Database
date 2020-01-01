@@ -16,3 +16,6 @@ void Profile::addRide(Ride ride){
 	Profile::rides.push_back(ride);
 }
 
+void Profile::payRide(int idx){
+
+}
