@@ -16,4 +16,5 @@ class Profile{
 		~Profile();
 		void addRide(Ride ride);
 		void payRide(int idx);
+		void showProfile();
 };

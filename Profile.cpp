@@ -4,6 +4,8 @@
 #include "Ride.h"
 #include "Driver.h"
 
+using namespace std;
+
 Profile::Profile(string name){
 	Profile::name = name;
 	Profile::balance = 0;
@@ -18,5 +20,9 @@ void Profile::addRide(Ride ride){
 }
 
 void Profile::payRide(int idx){
+	
+}
 
+void Profile::showProfile(){
+	cout << name << endl;
 }

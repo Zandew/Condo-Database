@@ -10,6 +10,7 @@ int main(){
 	string name;
 	cin >> name;
 	cout << name << endl;
-	Profile profile(string);
+	Profile profile(name);
+	cout << profile.name << endl;
 	return 0;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Profile.h"
-#include "Car.h"
+
+class Car;
 
 class Driver : protected Profile{
 	private:
@@ -9,4 +10,5 @@ class Driver : protected Profile{
 	public:
 		Driver(Car car, double rating, double rate);
 		~Driver();
+		void showProfile();
 };
