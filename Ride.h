@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
-#include "Driver.h"
+
+class Driver;
 
 class Ride{
 	private:
