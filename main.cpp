@@ -7,10 +7,10 @@
 using namespace std;
 
 int main(){
+	cout << "CREATE ACCOUNT" << endl;
+	cout << "Enter Your Name: " << endl;
 	string name;
 	cin >> name;
-	cout << name << endl;
 	Profile profile(name);
-	cout << profile.name << endl;
 	return 0;
 }
