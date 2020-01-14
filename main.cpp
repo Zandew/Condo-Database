@@ -176,7 +176,7 @@ vector<Ride> Profile::getRides(){
 void Profile::addRide(Ride ride){
     ride.setTime(time(NULL));
     ride.setPaid(false);
-    Profile::rides.push_back(ride);
+    Profile::rides.insert(Profile::rides.begin(), ride);
 }
 
 void Profile::payRide(int idx){
@@ -256,8 +256,8 @@ bool ProfileScreen::showScreen(){
     int sz = rideHistory.size();
     while (idx<-1||idx>sz||(idx>0&&idx<=sz&&rideHistory[idx-1].getDriver()->getPrice(20)>profile.getBalance())){
         if (idx>0&&idx<=sz) {
-            if (!rideHistory[idx-1].getPaid()) cout << "Insufficient Funds" << endl;
-            else cout << "Already paid for this ride" << endl;
+            if (rideHistory[idx-1].getPaid()) cout << "Already paid for this ride" << endl;
+            else cout << "Insufficient funds" << endl;
         }else cout <<"Invalid Command" << endl;
         cout << "Return to main menu(0) or pay for ride(ride #)? ";
         cin >> idx;
@@ -312,8 +312,12 @@ bool RideScreen::showScreen(){
             cin >> com;
         }
         if (com==0){
-            profile.addRide(rides[idx]);
-            currentScreen = arr;
+			if (!profile.getRides().empty()&&!profile.getRides()[0].getPaid()){
+				cout << "You have not paid for your last ride" << endl;
+			}else{
+            	profile.addRide(rides[idx]);
+            	currentScreen = arr;
+			}
         }
     }
     return true;
