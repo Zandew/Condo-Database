@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>
+#include <algorithm>
 #include <ctime>
 #include <iomanip>
 #include <vector>
@@ -17,6 +19,7 @@ private:
     vector<double> ratings;
     double rate;
 public:
+	Driver() {}
     Driver(string name, Car car, double rate);
     string getName();
     string getRating();
@@ -206,9 +209,9 @@ public:
 
 Screen *arr[3] = {new MenuScreen, new ProfileScreen, new RideScreen};
 Screen **currentScreen = arr;
-Car car = {"toyota", "M2N6W5", 5};
-Driver d1 = {"Andrew", car, 5};
-Driver d2 = {"Michel", car, 6};
+Car carList[5] = {{"Toyota Corolla", "QBXNB9", 5}, {"Honda Civic", "O5UXPV", 4}, {"Chevrolet Equinox", "AWST5W", 5}, {"Ford F-150", "PBL2SH", 5}, {"Nissan Rogue", "I2OIJ0", 4}};
+string nameList[20] = {"James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles", "Mary", "Patricia", "Irene", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan", "Jessica", "Sarah"};
+Driver driverList[10];
 vector<Ride> rides;
 
 bool MenuScreen::showScreen(){
@@ -226,8 +229,8 @@ bool MenuScreen::showScreen(){
         cout << "Enter the source and destination of the ride: ";
         string source, destination;
         cin >> source >> destination;
-        rides.push_back(Ride(&d1, source, destination));
-        rides.push_back(Ride(&d2, source, destination));
+		random_shuffle(driverList, driverList+10);
+		for (int i=0; i<5; i++) rides.push_back(Ride(&driverList[i], source, destination)); 
     }
     return true;
 }
@@ -323,13 +326,26 @@ bool RideScreen::showScreen(){
     return true;
 }
 
-int main(){
-    cout << left;
+void init(){
+	cout << left;
     cout << "CREATE ACCOUNT" << endl;
     cout << "Enter Your Name: ";
     string name;
     getline(cin, name);
     profile.setName(name);
+	bool used[20];
+	for (int i=0; i<10; i++){
+		int idx = rand()%20;
+		while (used[idx]) idx = rand()%20;
+		driverList[i] = {nameList[idx], carList[rand()%5], rand()%10};
+		int ratings = rand()%5;
+		for (int j=0; j<ratings; j++) driverList[i].addRating(rand()%10);
+		used[idx] = true;
+	}
+}
+
+int main(){
+	init();
     while ((*currentScreen)->showScreen());
     return 0;
 }
