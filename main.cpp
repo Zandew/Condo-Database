@@ -88,7 +88,7 @@ public:
     void setPaid(bool paid);
     bool getPaid();
     virtual void showInfo();
-    void showHistory();
+    virtual void showHistory();
 };
 
 Ride::Ride(Driver *driver, string source, string destination){
@@ -134,7 +134,7 @@ void Ride::showInfo(){
 }
 
 void Ride::showHistory(){
-    cout << setw(1) << driver->getName() << setw(10) << source << setw(14) << destination << "$" << fixed << setprecision(2) << setw(8) << driver->getPrice(20) << (paid?"Paid":"Not Paid") << endl;
+    cout << setw(15) << driver->getName() << setw(10) << source << setw(14) << destination << "$" << fixed << setprecision(2) << setw(8) << driver->getPrice(20) << setw(10) << (paid?"Paid":"Not Paid") << put_time(localtime(&time), "%Y/%m/%d %T") << endl;
 }
 
 class Carpool : public Ride{
@@ -144,6 +144,7 @@ public:
     Carpool(Driver* driver, string source, string destination, int passengers);
     void select();
     void showInfo();
+	void showHistory();
 };
 Carpool::Carpool(Driver* driver, string source, string destination, int passengers){
     Carpool::driver = driver;
@@ -158,8 +159,13 @@ void Carpool::select(){
 }
 
 void Carpool::showInfo(){
-    cout << driver->getName() << setw(15-driver->getName().length()) << "(CP)" << fixed << setprecision(1) << setw(8) << driver->getRating() << "$" << driver->getPrice(20) << endl;
+    cout << driver->getName() << " " <<  setw(14-driver->getName().length()) << "(CP)" << fixed << setprecision(1) << setw(8) << driver->getRating() << "$" << driver->getPrice(20) << endl;
 }
+
+void Carpool::showHistory(){
+    cout << driver->getName() << " " << setw(14-driver->getName().length()) << "(CP)" << setw(10) << source << setw(14) << destination << "$" << fixed << setprecision(2) << setw(8) << driver->getPrice(20) << setw(10) << (paid?"Paid":"Not Paid") << put_time(localtime(&time), "%Y/%m/%d %T") << endl;
+}
+
 
 class Profile {
 private:
@@ -262,11 +268,7 @@ bool ProfileScreen::showScreen(){
     cout << "Name: " << profile.getName() << endl;
     cout << "Balance: $" << fixed << setprecision(2) << profile.getBalance() << endl;
     cout << "Ride History: " << endl;
-    cout << "   " << setfill(' ') << setw(10) << "NAME";
-    cout << setw(10) << "SOURCE";
-    cout << setw(14) << "DESTINATION";
-    cout << setw(9) << "PRICE";
-    cout << "STATUS" << endl;
+    cout << "   " << setfill(' ') << setw(15) << "NAME" << setw(10) << "SOURCE" << setw(14) << "DESTINATION" << setw(9) << "PRICE" << setw(10) << "STATUS" << "DATE" << endl;
     vector<Ride*> rideHistory = profile.getRides();
     for (int i=0; i<rideHistory.size(); i++){
         cout << (i+1) << ". ";
