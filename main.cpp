@@ -246,20 +246,49 @@ Driver driverList[10];
 //Pointer array of Ride/Carpool objects
 Ride *rides[5];
 
+//variables to store user input
+string strInput;
+int intInput;
+double doubleInput;
+
+//function that checks if user's input is valid integer
+bool parseInt(){
+    try{
+        intInput = stoi(strInput);
+        return true;
+    }catch(exception e){
+        return false;
+    }
+}
+
+//function that checks if user's input is valid double
+bool parseDouble(){
+    try{
+        doubleInput = stod(strInput);
+        return true;
+    }catch (exception e){
+        return false;
+    }
+};
+
 //MenuScreen class method to print out screen
 bool MenuScreen::showScreen(){
     cout << "----------MENU----------" << endl;
     cout << "0->Exit" << endl;
     cout << "1->Profile" << endl;
     cout << "2->Reserve Ride" << endl;
-    int x;
-    cin >> x;
-    if (x==0) return false;
-    else if (x==1) currentScreen = arr+1;
+    cout << "Enter a choice: ";
+    getline(cin, strInput);
+    while (!parseInt()){
+        cout << "Invalid Command" << endl;
+        cout << "Enter a choice: ";
+        getline(cin, strInput);
+    }
+    if (intInput==0) return false;
+    else if (intInput==1) currentScreen = arr+1;
     else {
         currentScreen = arr+2;
         string source, destination;
-        cin.ignore();
         cout << "Enter the source of the ride: ";
         getline(cin, source);
         cout << "Enter the destination of the ride: ";
@@ -285,36 +314,39 @@ bool ProfileScreen::showScreen(){
         cout << (i+1) << ". ";
         rideHistory[i]->showHistory();
     }
-    cout << "Return to main menu(0) or pay for ride(ride #) or add money(-1)? ";
-    int idx;
-    cin >> idx;
-    int sz = rideHistory.size();
-    while (idx<-1||idx>sz||(idx>0&&idx<=sz&&rideHistory[idx-1]->getDriver()->getPrice()>profile.getBalance())){
-        if (idx>0&&idx<=sz) {
-            if (rideHistory[idx-1]->getPaid()) cout << "Already paid for this ride" << endl;
-            else cout << "Insufficient funds" << endl;
-        }else cout <<"Invalid Command" << endl;
-        cout << "Return to main menu(0) or pay for ride(ride #)? or add money(-1)? ";
-        cin >> idx;
+    while (true){
+        cout << "Return to main menu(0) or pay for ride(ride #) or add money(-1)? ";
+        getline(cin, strInput);
+        int sz = rideHistory.size();
+        if (!parseInt()||intInput<-1||intInput>sz) {
+            cout << "Invalid Command" << endl;
+        }else if (intInput>0&&rideHistory[intInput-1]->getPaid()) {
+            cout << "Already paid for this ride" << endl;
+        }else if (intInput>0&&rideHistory[intInput-1]->getDriver()->getPrice()>profile.getBalance()){
+            cout << "Insufficient Funds" << endl;
+        }else break;
     }
-    if (idx==-1){
-        cout << "Enter an amount: ";
-        double val;
-        cin >> val;
-        profile.setBalance(profile.getBalance()+val);
-    }else if (idx==0){
+    if (intInput==-1){
+        while (true){
+            cout << "Enter an amount: ";
+            getline(cin, strInput);
+            if (!parseDouble()||doubleInput<0) {
+                cout << "Invalid Amount" << endl;
+            }else break;
+        }
+        profile.setBalance(profile.getBalance()+doubleInput);
+    }else if (intInput==0){
         currentScreen = arr;
     }else{
-        profile.payRide(idx-1);
-        cout << "On a scale of 1 to 10, how did you enjoy this ride? ";
-        double rating;
-        cin >> rating;
-        while (rating<1||rating>10){
-            cout << "Invalid Rating" << endl;
+        profile.payRide(intInput-1);
+        while (true){
             cout << "On a scale of 1 to 10, how did you enjoy this ride? ";
-            cin >> rating;
+            getline(cin, strInput);
+            if (!parseDouble()||doubleInput<1||doubleInput>10){
+                cout << "Invalid rating" << endl;
+            }else break;
         }
-        rideHistory[idx-1]->getDriver()->addRating(rating);
+        rideHistory[intInput-1]->getDriver()->addRating(doubleInput);
     }
     return true;
 }
@@ -327,26 +359,26 @@ bool RideScreen::showScreen(){
         cout << (i+1) << ". ";
         rides[i]->showInfo();
     }
-    cout << "Return to main menu(0) or view a ride(ride #)? ";
-    int idx, com;
-    cin >> idx;
-    while (idx<0||idx>5){
-        cout << "Invalid command" << endl;
+    while (true){
         cout << "Return to main menu(0) or view a ride(ride #)? ";
-        cin >> idx;
+        getline(cin, strInput);
+        if (!parseInt()||intInput<0||intInput>5){
+            cout << "Invalid Command" << endl;
+        }else break;
     }
-    if (idx==0){
+    if (intInput==0){
         currentScreen = arr;
     }else{
-        rides[--idx]->select();
-        cout << "Choose this ride(0) or go back(1)? ";
-        cin >> com;
-        while (com<0||com>1){
-            cout << "Invalid command" << endl;
+        int idx = --intInput;
+        rides[idx]->select();
+        while (true){
             cout << "Choose this ride(0) or go back(1)? ";
-            cin >> com;
+            getline(cin, strInput);
+            if (!parseInt()||intInput<0||intInput>1){
+                cout << "Invalid Command" << endl;
+            }else break;
         }
-        if (com==0){
+        if (intInput==0){
             if (!profile.getRides().empty()&&!profile.getRides()[0]->getPaid()){
                 cout << "You have not paid for your last ride" << endl;
             }else{
