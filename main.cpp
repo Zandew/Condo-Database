@@ -273,15 +273,15 @@ bool parseDouble(){
 
 //MenuScreen class method to print out screen
 bool MenuScreen::showScreen(){
-    cout << "----------MENU----------" << endl;
-    cout << "0->Exit" << endl;
-    cout << "1->Profile" << endl;
-    cout << "2->Reserve Ride" << endl;
-    cout << "Enter a choice: ";
+    cout << "------------MENU-------------" << endl;
+    cout << "0. Exit" << endl;
+    cout << "1. Profile" << endl;
+    cout << "2. Reserve Ride" << endl;
+    cout << "Enter a choice (0, 1, or 2): ";
     getline(cin, strInput);
     while (!parseInt()){
         cout << "Invalid Command" << endl;
-        cout << "Enter a choice: ";
+        cout << "Enter a choice (0, 1, or 2): ";
         getline(cin, strInput);
     }
     if (intInput==0) return false;
@@ -304,7 +304,7 @@ bool MenuScreen::showScreen(){
 
 //ProfileScreen class method to print out screen
 bool ProfileScreen::showScreen(){
-    cout << "----------PROFILE----------" << endl;
+    cout << "-----------PROFILE-----------" << endl;
     cout << "Name: " << profile.getName() << endl;
     cout << "Balance: $" << fixed << setprecision(2) << profile.getBalance() << endl;
     cout << "Ride History: " << endl;
@@ -353,7 +353,7 @@ bool ProfileScreen::showScreen(){
 
 //RideScreen class method to print out screen
 bool RideScreen::showScreen(){
-    cout << "----------RIDES----------" << endl;
+    cout << "------------RIDES------------" << endl;
     cout << "#  " << setw(15) << "NAME" << "RATING" << "  PRICE" << endl;
     for (int i=0; i<5; i++){
         cout << (i+1) << ". ";
