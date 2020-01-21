@@ -90,10 +90,10 @@ public:
     Ride(){}
     Ride(Driver *driver, string source, string destination);
     Driver* getDriver();
-    virtual void select();
     void setTime(time_t time);
     void setPaid(bool paid);
     bool getPaid();
+	virtual void select();
     virtual void showInfo();
     virtual void showHistory();
 };
@@ -108,9 +108,6 @@ Ride::Ride(Driver *driver, string source, string destination){
 //Ride class driver getter method
 Driver* Ride::getDriver() {return Ride::driver;}
 
-//Ride class method to select current ride
-void Ride::select() {driver->showInfo();}
-
 //Ride class time setter method
 void Ride::setTime(time_t time) {Ride::time = time;}
 
@@ -119,6 +116,9 @@ void Ride::setPaid(bool paid) {Ride::paid = paid;}
 
 //Ride class paid getter method
 bool Ride::getPaid() {return Ride::paid;}
+
+//Ride class method to select current ride
+void Ride::select() {driver->showInfo();}
 
 //Ride class method that prints out ride's info
 void Ride::showInfo(){
