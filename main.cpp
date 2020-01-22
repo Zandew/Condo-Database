@@ -273,6 +273,7 @@ bool parseDouble(){
 
 //MenuScreen class method to print out screen
 bool MenuScreen::showScreen(){
+    //outputs main menu 
     cout << "------------MENU-------------" << endl;
     cout << "0. Exit" << endl;
     cout << "1. Profile" << endl;
@@ -284,17 +285,19 @@ bool MenuScreen::showScreen(){
         cout << "Enter a choice (0, 1, or 2): ";
         getline(cin, strInput);
     }
-    if (intInput==0) return false;
-    else if (intInput==1) currentScreen = arr+1;
-    else {
+    if (intInput==0) return false; // exits the program
+    else if (intInput==1) currentScreen = arr+1; // views the profile
+    else { // reserves a ride
         currentScreen = arr+2;
         string source, destination;
         cout << "Enter the source of the ride: ";
         getline(cin, source);
         cout << "Enter the destination of the ride: ";
-        getline(cin, destination);
+        getline(cin, destination); 
+        // randomize drivers
         random_shuffle(driverList, driverList+10);
         for (int i=0; i<5; i++) {
+	    //approximately 1 out of 5 rides are carpools
             if (!(rand()%5)) rides[i] = new Carpool(&driverList[i], source, destination, rand()%driverList[i].getCar().seats);
             else rides[i] = new Ride(&driverList[i], source, destination);
         }
@@ -304,6 +307,7 @@ bool MenuScreen::showScreen(){
 
 //ProfileScreen class method to print out screen
 bool ProfileScreen::showScreen(){
+    //outputs user's profile info
     cout << "-----------PROFILE-----------" << endl;
     cout << "Name: " << profile.getName() << endl;
     cout << "Balance: $" << fixed << setprecision(2) << profile.getBalance() << endl;
@@ -326,7 +330,7 @@ bool ProfileScreen::showScreen(){
             cout << "Insufficient Funds" << endl;
         }else break;
     }
-    if (intInput==-1){
+    if (intInput==-1){ //adds money to balance
         while (true){
             cout << "Enter an amount: ";
             getline(cin, strInput);
@@ -335,9 +339,9 @@ bool ProfileScreen::showScreen(){
             }else break;
         }
         profile.setBalance(profile.getBalance()+doubleInput);
-    }else if (intInput==0){
+    }else if (intInput==0){ //go back to main screen
         currentScreen = arr;
-    }else{
+    }else{ //pay for a ride
         profile.payRide(intInput-1);
         while (true){
             cout << "On a scale of 1 to 10, how did you enjoy this ride? ";
@@ -353,12 +357,14 @@ bool ProfileScreen::showScreen(){
 
 //RideScreen class method to print out screen
 bool RideScreen::showScreen(){
+    //outputs 5 rides
     cout << "------------RIDES------------" << endl;
     cout << "#  " << setw(15) << "NAME" << "RATING" << "  PRICE" << endl;
     for (int i=0; i<5; i++){
         cout << (i+1) << ". ";
         rides[i]->showInfo();
     }
+    //ask user for input until they enter valid number
     while (true){
         cout << "Return to main menu(0) or view a ride(ride #)? ";
         getline(cin, strInput);
@@ -366,9 +372,9 @@ bool RideScreen::showScreen(){
             cout << "Invalid Command" << endl;
         }else break;
     }
-    if (intInput==0){
+    if (intInput==0){ // go back to main menu
         currentScreen = arr;
-    }else{
+    }else{ // view a ride in more detail
         int idx = --intInput;
         rides[idx]->select();
         while (true){
@@ -378,7 +384,7 @@ bool RideScreen::showScreen(){
                 cout << "Invalid Command" << endl;
             }else break;
         }
-        if (intInput==0){
+        if (intInput==0){ //select this ride
             if (!profile.getRides().empty()&&!profile.getRides()[0]->getPaid()){
                 cout << "You have not paid for your last ride" << endl;
             }else{
@@ -396,10 +402,13 @@ void init(){
     cout << "CREATE ACCOUNT" << endl;
     cout << "Enter Your Name: ";
     string name;
+    //gets user's name and sets profile name 
     getline(cin, name);
     profile.setName(name);
+    //sets random seed
     srand(time(nullptr));
     bool used[20];
+    //creates 10 random drivers with random ratings
     for (int i=0; i<10; i++){
         int idx = rand()%20;
         while (used[idx]) idx = rand()%20;
