@@ -93,7 +93,7 @@ public:
     void setTime(time_t time);
     void setPaid(bool paid);
     bool getPaid();
-	virtual void select();
+    virtual void select();
     virtual void showInfo();
     virtual void showHistory();
 };
@@ -172,6 +172,7 @@ private:
     double balance;
     vector<Ride*> rides;
 public:
+    ~Profile();
     void setName(string name);
     string getName();
     void setBalance(double balance);
@@ -180,6 +181,13 @@ public:
     void addRide(Ride *ride);
     void payRide(int idx);
 } profile;
+
+Profile::~Profile(){
+    while (!rides.empty()){
+        delete rides.back();
+        rides.pop_back();
+    }
+}
 
 //Profile class name setter method
 void Profile::setName(string name) {Profile::name = name;}
@@ -273,7 +281,7 @@ bool parseDouble(){
 
 //MenuScreen class method to print out screen
 bool MenuScreen::showScreen(){
-    //outputs main menu 
+    //outputs main menu
     cout << "------------MENU-------------" << endl;
     cout << "0. Exit" << endl;
     cout << "1. Profile" << endl;
@@ -293,11 +301,11 @@ bool MenuScreen::showScreen(){
         cout << "Enter the source of the ride: ";
         getline(cin, source);
         cout << "Enter the destination of the ride: ";
-        getline(cin, destination); 
+        getline(cin, destination);
         // randomize drivers
         random_shuffle(driverList, driverList+10);
         for (int i=0; i<5; i++) {
-	    //approximately 1 out of 5 rides are carpools
+            //approximately 1 out of 5 rides are carpools
             if (!(rand()%5)) rides[i] = new Carpool(&driverList[i], source, destination, rand()%driverList[i].getCar().seats);
             else rides[i] = new Ride(&driverList[i], source, destination);
         }
@@ -390,6 +398,7 @@ bool RideScreen::showScreen(){
             }else{
                 profile.addRide(rides[idx]);
                 currentScreen = arr;
+                for (int i=0; i<5; i++) delete rides[i];
             }
         }
     }
@@ -402,7 +411,7 @@ void init(){
     cout << "CREATE ACCOUNT" << endl;
     cout << "Enter Your Name: ";
     string name;
-    //gets user's name and sets profile name 
+    //gets user's name and sets profile name
     getline(cin, name);
     profile.setName(name);
     //sets random seed
@@ -419,8 +428,15 @@ void init(){
     }
 }
 
+//frees up any dynamically allocated memory
+void cleanUp(){
+    for (int i=0; i<3; i++) delete arr[i];
+    profile.~Profile();
+}
+
 int main(){
     init();
     while ((*currentScreen)->showScreen());
+    cleanUp();
     return 0;
 }
