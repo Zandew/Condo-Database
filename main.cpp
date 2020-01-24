@@ -6,6 +6,7 @@
  */
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
 #include <algorithm>
 #include <ctime>
 #include <iomanip>
@@ -125,7 +126,7 @@ void Ride::showInfo(){
     cout << setw(15) << driver->getName() << fixed << setprecision(1) << setw(8) << driver->getRating() << "$" << driver->getPrice() << endl;
 }
 
-//Ride clcass method that prints out ride's history
+//Ride class method that prints out ride's history
 void Ride::showHistory(){
     cout << setw(15) << driver->getName() << setw(10) << source << setw(14) << destination << "$" << fixed << setprecision(2) << setw(8) << driver->getPrice() << setw(10) << (paid?"Paid":"Not Paid") << put_time(localtime(&time), "%Y/%m/%d %T") << endl;
 }
@@ -251,8 +252,10 @@ Car carList[5] = {{"Toyota Corolla", "QBXNB9", 5}, {"Honda Civic", "O5UXPV", 4},
 string nameList[20] = {"James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles", "Mary", "Patricia", "Irene", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan", "Jessica", "Sarah"};
 //Array of Driver objects
 Driver driverList[10];
+bool used[20];
 //Pointer array of Ride/Carpool objects
-Ride *rides[5];
+vector<vector<Ride*>> rideList;
+vector<Ride*> v;
 
 //variables to store user input
 string strInput;
@@ -302,13 +305,18 @@ bool MenuScreen::showScreen(){
         getline(cin, source);
         cout << "Enter the destination of the ride: ";
         getline(cin, destination);
-        // randomize drivers
-        random_shuffle(driverList, driverList+10);
+        v.clear();
+        memset(used, false, sizeof used);
         for (int i=0; i<5; i++) {
+            //randomly selects driver
+            int r = rand()%10;
+            while (used[r]) r = rand()%10;
+            used[r] = true;
             //approximately 1 out of 5 rides are carpools
-            if (!(rand()%5)) rides[i] = new Carpool(&driverList[i], source, destination, rand()%driverList[i].getCar().seats);
-            else rides[i] = new Ride(&driverList[i], source, destination);
+            if (!(rand()%5)) v.push_back(new Carpool(&driverList[r], source, destination, rand()%driverList[r].getCar().seats));
+            else v.push_back(new Ride(&driverList[r], source, destination));
         }
+        rideList.push_back(v);
     }
     return true;
 }
@@ -358,6 +366,7 @@ bool ProfileScreen::showScreen(){
                 cout << "Invalid rating" << endl;
             }else break;
         }
+        //adds rating to driver
         rideHistory[intInput-1]->getDriver()->addRating(doubleInput);
     }
     return true;
@@ -370,7 +379,7 @@ bool RideScreen::showScreen(){
     cout << "#  " << setw(15) << "NAME" << "RATING" << "  PRICE" << endl;
     for (int i=0; i<5; i++){
         cout << (i+1) << ". ";
-        rides[i]->showInfo();
+        rideList.back()[i]->showInfo();
     }
     //ask user for input until they enter valid number
     while (true){
@@ -384,7 +393,7 @@ bool RideScreen::showScreen(){
         currentScreen = arr;
     }else{ // view a ride in more detail
         int idx = --intInput;
-        rides[idx]->select();
+        rideList.back()[idx]->select();
         while (true){
             cout << "Choose this ride(0) or go back(1)? ";
             getline(cin, strInput);
@@ -396,9 +405,8 @@ bool RideScreen::showScreen(){
             if (!profile.getRides().empty()&&!profile.getRides()[0]->getPaid()){
                 cout << "You have not paid for your last ride" << endl;
             }else{
-                profile.addRide(rides[idx]);
+                profile.addRide(rideList.back()[idx]);
                 currentScreen = arr;
-                for (int i=0; i<5; i++) delete rides[i];
             }
         }
     }
@@ -416,7 +424,6 @@ void init(){
     profile.setName(name);
     //sets random seed
     srand(time(nullptr));
-    bool used[20];
     //creates 10 random drivers with random ratings
     for (int i=0; i<10; i++){
         int idx = rand()%20;
@@ -432,6 +439,11 @@ void init(){
 void cleanUp(){
     for (int i=0; i<3; i++) delete arr[i];
     profile.~Profile();
+    for (int i=0; i<rideList.size(); i++){
+        for (int j=0; j<5; j++){
+            delete rideList[i][j];
+        }
+    }
 }
 
 int main(){
